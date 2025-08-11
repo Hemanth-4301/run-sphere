@@ -27,8 +27,8 @@ export default function App() {
   const [theme, setTheme] = useState(
     () => localStorage.getItem(THEME_KEY) || "dark"
   );
-  const [language, setLanguage] = useState("javascript");
-  const [code, setCode] = useState(EXAMPLES["javascript"] || "");
+  const [language, setLanguage] = useState("csharp");
+  const [code, setCode] = useState(EXAMPLES["csharp"] || "");
   const [stdin, setStdin] = useState("");
   const [result, setResult] = useState(null);
   const [running, setRunning] = useState(false);
