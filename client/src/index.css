@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+  /* 1vh fallback */
+  --app-vh: 1vh;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+}
+
+/* Safe area for iOS bottom bars on mobile sticky areas */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
