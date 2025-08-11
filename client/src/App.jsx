@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import EditorPanel from "./components/EditorPanel.jsx";
 import OutputPanel from "./components/OutputPanel.jsx";
@@ -14,7 +13,7 @@ import {
   saveEditorSettings,
   resetEditorSettings,
 } from "./lib/editorSettings.js";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Play } from "lucide-react";
 
 const THEME_KEY = "uiTheme";
 const WIDTH_KEY = "editorPaneWidth"; // percent (desktop vertical split)
@@ -227,27 +226,30 @@ export default function App() {
   const systemTheme = theme;
 
   return (
-    <div className="min-h-screen bg-bg-light dark:bg-bg-dark text-black dark:text-white transition-colors">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100 transition-colors bg-gradient-to-br from-rose-50 via-fuchsia-50 to-purple-100 dark:from-zinc-950 dark:via-purple-950/60 dark:to-fuchsia-900/40">
       {/* Header */}
-      <header className="border-b border-black/10 dark:border-white/10 sticky top-0 z-20 backdrop-blur bg-white/70 dark:bg-black/60">
+      <header className="border-b border-white/40 dark:border-white/10 sticky top-0 z-20 backdrop-blur bg-white/60 dark:bg-zinc-950/50">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-lg font-semibold">Run Sphere</div>
+            <div className="text-lg font-semibold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600">
+              Run Sphere
+            </div>
           </div>
           <div className="flex items-center gap-2">
             {!isMobile && (
               <button
                 onClick={doRun}
-                className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black text-white dark:bg-white dark:text-black"
+                className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600 text-white shadow-md hover:from-purple-500 hover:via-fuchsia-500 hover:to-rose-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/60"
                 disabled={running}
                 title="Run (Ctrl/Cmd + Enter)"
               >
-                {running ? "Running..." : "Run ▶"}
+                <Play size={16} />
+                {running ? "Running..." : "Run"}
               </button>
             )}
             <button
               onClick={openSettingsDesktop}
-              className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/20 bg-white dark:bg-black"
+              className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/40 dark:border-white/10 bg-white/80 dark:bg-zinc-900/70 hover:bg-white dark:hover:bg-zinc-900 transition-colors shadow-sm"
               title="Editor Settings"
             >
               Settings
@@ -255,7 +257,7 @@ export default function App() {
             <button
               aria-label="Toggle theme"
               onClick={toggleSiteTheme}
-              className="px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/20 bg-white dark:bg-black"
+              className="px-3 py-1.5 rounded-full border border-white/40 dark:border-white/10 bg-white/80 dark:bg-zinc-900/70 hover:bg-white dark:hover:bg-zinc-900 transition-colors shadow-sm"
               title="Toggle dark/light"
             >
               {theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}
@@ -312,7 +314,7 @@ export default function App() {
                   resetRightSplit();
                 }}
                 onMouseDown={() => setDraggingV(true)}
-                className={`w-1.5 cursor-col-resize bg-black/10 dark:bg-white/20 rounded-full hover:bg-black/20 dark:hover:bg-white/30 ${draggingV ? "bg-black/30 dark:bg-white/40" : ""}`}
+                className={`w-2 cursor-col-resize rounded-full bg-gradient-to-b from-purple-400/50 via-fuchsia-400/50 to-rose-400/50 hover:from-purple-500/70 hover:via-fuchsia-500/70 hover:to-rose-500/70 border border-white/30 dark:border-white/10 ${draggingV ? "brightness-110" : ""}`}
               />
             )}
 
@@ -326,24 +328,36 @@ export default function App() {
                   className="transition-[height] duration-150 ease-out"
                   style={{ height: `${outHeightPct}%` }}
                 >
-                  <OutputPanel
-                    result={result}
-                    running={running}
-                    height="100%"
-                  />
+                  <div className="rounded-2xl p-[1.5px] bg-gradient-to-br from-purple-500 via-fuchsia-500 to-rose-500 shadow-[0_10px_30px_rgba(0,0,0,0.15)] h-full">
+                    <div className="h-full rounded-2xl bg-white/80 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden">
+                      <OutputPanel
+                        result={result}
+                        running={running}
+                        height="100%"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Tabs for bottom panel */}
-                <div className="mt-2 mb-2 flex items-center gap-2">
+                <div className="mt-3 mb-2 flex items-center gap-2">
                   <button
                     onClick={() => setBottomTab("saved")}
-                    className={`px-3 py-1.5 rounded-lg text-sm border ${bottomTab === "saved" ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white" : "bg-white dark:bg-black border-black/10 dark:border-white/20"}`}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                      bottomTab === "saved"
+                        ? "text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600 border-transparent"
+                        : "bg-white/80 dark:bg-zinc-900/70 border-white/40 dark:border-white/10 hover:bg-white dark:hover:bg-zinc-900"
+                    }`}
                   >
                     Saved
                   </button>
                   <button
                     onClick={() => setBottomTab("settings")}
-                    className={`px-3 py-1.5 rounded-lg text-sm border ${bottomTab === "settings" ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white" : "bg-white dark:bg-black border-black/10 dark:border-white/20"}`}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                      bottomTab === "settings"
+                        ? "text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600 border-transparent"
+                        : "bg-white/80 dark:bg-zinc-900/70 border-white/40 dark:border-white/10 hover:bg-white dark:hover:bg-zinc-900"
+                    }`}
                   >
                     Settings
                   </button>
@@ -356,19 +370,23 @@ export default function App() {
                   title="Drag to resize (double-click to reset)"
                   onDoubleClick={resetRightSplit}
                   onMouseDown={() => setDraggingH(true)}
-                  className={`h-1.5 mb-2 cursor-row-resize bg-black/10 dark:bg-white/20 rounded-full hover:bg-black/20 dark:hover:bg-white/30 ${draggingH ? "bg-black/30 dark:bg-white/40" : ""}`}
+                  className={`h-2 mb-2 cursor-row-resize rounded-full bg-gradient-to-r from-purple-400/50 via-fuchsia-400/50 to-rose-400/50 hover:from-purple-500/70 hover:via-fuchsia-500/70 hover:to-rose-500/70 border border-white/30 dark:border-white/10 ${draggingH ? "brightness-110" : ""}`}
                 />
 
                 <div className="transition-[height] duration-150 ease-out flex-1 min-h-[220px]">
-                  {bottomTab === "saved" ? (
-                    <SavedPrograms onOpen={openSaved} />
-                  ) : (
-                    <SettingsPanel
-                      settings={editorSettings}
-                      onChange={onSettingsChange}
-                      onReset={onSettingsReset}
-                    />
-                  )}
+                  <div className="h-full rounded-2xl p-[1.5px] bg-gradient-to-br from-purple-500 via-fuchsia-500 to-rose-500">
+                    <div className="h-full rounded-2xl bg-white/80 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden p-2 sm:p-3">
+                      {bottomTab === "saved" ? (
+                        <SavedPrograms onOpen={openSaved} />
+                      ) : (
+                        <SettingsPanel
+                          settings={editorSettings}
+                          onChange={onSettingsChange}
+                          onReset={onSettingsReset}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -402,75 +420,110 @@ export default function App() {
             )}
             {activeTab === "output" && (
               <div className="h-[1px] min-h-[calc(var(--app-vh)*65)]">
-                <OutputPanel
-                  result={result}
-                  running={running}
-                  height="calc(var(--app-vh) * 65)"
-                />
+                <div className="h-full rounded-2xl p-[1.5px] bg-gradient-to-br from-purple-500 via-fuchsia-500 to-rose-500">
+                  <div className="h-full rounded-2xl bg-white/80 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden">
+                    <OutputPanel
+                      result={result}
+                      running={running}
+                      height="calc(var(--app-vh) * 65)"
+                    />
+                  </div>
+                </div>
               </div>
             )}
             {activeTab === "saved" && (
               <div className="min-h-[calc(var(--app-vh)*60)]">
-                <SavedPrograms onOpen={openSaved} />
+                <div className="rounded-2xl p-[1.5px] bg-gradient-to-br from-purple-500 via-fuchsia-500 to-rose-500">
+                  <div className="rounded-2xl bg-white/80 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden p-2">
+                    <SavedPrograms onOpen={openSaved} />
+                  </div>
+                </div>
               </div>
             )}
             {activeTab === "settings" && (
-              <div className="min-h-[calc(var(--app-vh)*60)] ">
-                <SettingsPanel
-                  settings={editorSettings}
-                  onChange={onSettingsChange}
-                  onReset={onSettingsReset}
-                />
+              <div className="min-h-[calc(var(--app-vh)*60)]">
+                <div className="rounded-2xl p-[1.5px] bg-gradient-to-br from-purple-500 via-fuchsia-500 to-rose-500">
+                  <div className="rounded-2xl bg-white/80 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden p-2">
+                    <SettingsPanel
+                      settings={editorSettings}
+                      onChange={onSettingsChange}
+                      onReset={onSettingsReset}
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </>
         )}
       </main>
 
-      {/* Mobile bottom navigation with central Run */}
+      {/* Mobile floating dock with central Run */}
       {isMobile && (
-        <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white/90 dark:bg-black/90 backdrop-blur border-t border-black/10 dark:border-white/10 safe-bottom">
-          <div className="max-w-7xl mx-auto px-2 py-2 grid grid-cols-5 gap-2 items-center">
-            <button
-              onClick={() => setActiveTab("editor")}
-              className={`px-2 py-2 rounded-lg text-sm border ${activeTab === "editor" ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white" : "bg-white dark:bg-black border-black/10 dark:border-white/20"}`}
-            >
-              Editor
-            </button>
-            <button
-              onClick={() => setActiveTab("output")}
-              className={`px-2 py-2 rounded-lg text-sm border ${activeTab === "output" ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white" : "bg-white dark:bg-black border-black/10 dark:border-white/20"}`}
-            >
-              Output
-            </button>
-            {/* Big Run in center */}
-            <button
-              onClick={doRun}
-              disabled={running}
-              className="px-3 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black"
-              title="Run"
-            >
-              {running ? "…" : "▶"}
-            </button>
+        <nav className="fixed bottom-3 inset-x-0 z-30 safe-bottom">
+          <div className="mx-auto max-w-md px-3">
+            <div className="relative rounded-2xl border border-white/40 dark:border-white/10 bg-white/80 dark:bg-zinc-950/70 backdrop-blur shadow-lg">
+              <div className="grid grid-cols-5 gap-1 items-center px-2 py-2">
+                <button
+                  onClick={() => setActiveTab("editor")}
+                  className={`px-2 py-2 rounded-full text-sm transition-colors ${
+                    activeTab === "editor"
+                      ? "text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600"
+                      : "text-zinc-900 dark:text-zinc-100 hover:bg-white/70 dark:hover:bg-zinc-900/70"
+                  }`}
+                >
+                  Editor
+                </button>
+                <button
+                  onClick={() => setActiveTab("output")}
+                  className={`px-2 py-2 rounded-full text-sm transition-colors ${
+                    activeTab === "output"
+                      ? "text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600"
+                      : "text-zinc-900 dark:text-zinc-100 hover:bg-white/70 dark:hover:bg-zinc-900/70"
+                  }`}
+                >
+                  Output
+                </button>
 
-            <button
-              onClick={() => setActiveTab("saved")}
-              className={`px-2 py-2 rounded-lg text-sm border ${activeTab === "saved" ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white" : "bg-white dark:bg-black border-black/10 dark:border-white/20"}`}
-            >
-              Saved
-            </button>
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`px-2 py-2 rounded-lg text-sm border ${activeTab === "settings" ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white" : "bg-white dark:bg-black border-black/10 dark:border-white/20"}`}
-            >
-              Settings
-            </button>
+                {/* Big Run in center */}
+                <div className="flex items-center justify-center">
+                  <button
+                    onClick={doRun}
+                    disabled={running}
+                    className="h-12 w-12 -mt-8 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600 text-white shadow-xl flex items-center justify-center border border-white/40 dark:border-white/10 disabled:opacity-60"
+                    title="Run"
+                  >
+                    {running ? "…" : <Play size={18} />}
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab("saved")}
+                  className={`px-2 py-2 rounded-full text-sm transition-colors ${
+                    activeTab === "saved"
+                      ? "text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600"
+                      : "text-zinc-900 dark:text-zinc-100 hover:bg-white/70 dark:hover:bg-zinc-900/70"
+                  }`}
+                >
+                  Saved
+                </button>
+                <button
+                  onClick={() => setActiveTab("settings")}
+                  className={`px-2 py-2 rounded-full text-sm transition-colors ${
+                    activeTab === "settings"
+                      ? "text-white bg-gradient-to-r from-purple-600 via-fuchsia-600 to-rose-600"
+                      : "text-zinc-900 dark:text-zinc-100 hover:bg-white/70 dark:hover:bg-zinc-900/70"
+                  }`}
+                >
+                  Settings
+                </button>
+              </div>
+            </div>
           </div>
         </nav>
       )}
 
-      <footer className="py-6 text-center text-xs text-gray-700 dark:text-gray-300">
-        Use Ctrl/Cmd + Enter to Run • Ctrl/Cmd + S to Save
+      <footer className="py-6 text-center text-xs text-zinc-700/80 dark:text-zinc-300/80">
+        {"Use Ctrl/Cmd + Enter to Run • Ctrl/Cmd + S to Save"}
       </footer>
     </div>
   );
