@@ -34,16 +34,6 @@ export default function EditorPanel({
   const editorRef = useRef(null);
   const containerRef = useRef(null);
   const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const monacoLang = useMemo(() => {
     const opt = LANG_OPTIONS.find((o) => o.value === language);
@@ -86,6 +76,7 @@ export default function EditorPanel({
     return () => window.removeEventListener("keydown", handler);
   }, [onRun, onSave]);
 
+  // Ensure Monaco relayouts on container resize
   useEffect(() => {
     if (!containerRef.current) return;
     const ro = new ResizeObserver(() => {
@@ -124,60 +115,20 @@ export default function EditorPanel({
     } catch {}
   };
 
-  // Mobile-specific optimizations
-  const mobileEditorOptions = {
-    lineNumbers: "off",
-    minimap: { enabled: false },
-    scrollBeyondLastLine: false,
-    wordWrap: "on",
-    fontSize: 14,
-    fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-    padding: { top: 10, bottom: 10 },
-    lineDecorationsWidth: 5,
-    overviewRulerBorder: false,
-    hideCursorInOverviewRuler: true,
-    glyphMargin: false,
-    folding: false,
-    renderLineHighlight: "none",
-    selectionHighlight: false,
-    renderWhitespace: "none",
-    quickSuggestions: false,
-    suggestOnTriggerCharacters: false,
-    parameterHints: { enabled: false },
-    hover: { enabled: false },
-    contextmenu: false,
-  };
-
-  const desktopEditorOptions = {
-    fontFamily: editorSettings?.fontFamily,
-    fontSize: editorSettings?.fontSize ?? 14,
-    minimap: { enabled: !!editorSettings?.minimap },
-    scrollBeyondLastLine: false,
-    wordWrap: editorSettings?.wordWrap ?? "on",
-    smoothScrolling: true,
-    tabSize: editorSettings?.tabSize ?? 2,
-    lineNumbers: editorSettings?.lineNumbers ?? "on",
-    cursorBlinking: "smooth",
-    cursorSmoothCaretAnimation: "on",
-    renderWhitespace: "selection",
-    contextmenu: true,
-    dragAndDrop: true,
-  };
-
   return (
     <div
       ref={containerRef}
       className="rounded-xl bg-card-light dark:bg-card-dark shadow-soft border border-black/10 dark:border-white/10 overflow-hidden h-full flex flex-col"
     >
-      <div className="px-2 sm:px-4 py-2 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center gap-1 sm:gap-2 justify-between">
-        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
-          <label htmlFor="lang" className="text-xs sm:text-sm">
+      <div className="px-3 sm:px-4 py-2 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center gap-2 justify-between">
+        <div className="flex items-center gap-2 flex-wrap">
+          <label htmlFor="lang" className="text-sm">
             Language
           </label>
           <select
             id="lang"
             aria-label="Language"
-            className="text-xs sm:text-sm rounded-lg px-1 sm:px-2 py-1 bg-white dark:bg-black border border-black/10 dark:border-white/20"
+            className="text-sm rounded-lg px-2 py-1 bg-white dark:bg-black border border-black/10 dark:border-white/20"
             value={language}
             onChange={(e) => onLanguageChange(e.target.value)}
           >
@@ -189,76 +140,93 @@ export default function EditorPanel({
           </select>
           <button
             onClick={loadExample}
-            className="text-xs sm:text-sm px-1 sm:px-2 py-1 rounded-lg border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="text-sm px-2 py-1 rounded-lg border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
             title="Load Hello World and stdin example"
           >
-            Example
+            Load Example
           </button>
         </div>
 
         <div className="flex items-center gap-1 overflow-x-hidden">
-          {/* Mobile action buttons */}
-          <div className="flex flex-wrap gap-1">
+          {/* Mobile action buttons (visible on small screens) */}
+          <div className="md:hidden flex flex-wrap gap-1 xs:flex-col xs:gap-2">
             <button
               onClick={copySelected}
-              className="min-w-fit px-2 py-1 rounded-lg text-xs border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="min-w-fit max-w-[120px] px-2.5 py-1.5 rounded-lg text-xs sm:text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              Copy
+              Copy Selected
             </button>
             <button
               onClick={pasteAtCursor}
-              className="min-w-fit px-2 py-1 rounded-lg text-xs border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="min-w-fit max-w-[120px] px-2.5 py-1.5 rounded-lg text-xs sm:text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               Paste
             </button>
             <button
               onClick={onClear}
-              className="min-w-fit px-2 py-1 rounded-lg text-xs border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="min-w-fit max-w-[120px] px-2.5 py-1.5 rounded-lg text-xs sm:text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
               disabled={running}
+              title="Clear"
             >
               Clear
             </button>
             <button
               onClick={onSave}
-              className="min-w-fit px-2 py-1 rounded-lg text-xs border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="min-w-fit max-w-[120px] px-2.5 py-1.5 rounded-lg text-xs sm:text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
               disabled={running}
+              title="Save (Ctrl/Cmd+S)"
             >
               Save
             </button>
-            {!isMobile && (
+          </div>
+
+          {/* Desktop action buttons */}
+          <button
+            onClick={onClear}
+            className="hidden md:inline-block px-3 py-1.5 rounded-lg text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+            disabled={running}
+            title="Clear"
+          >
+            Clear
+          </button>
+          <button
+            onClick={onSave}
+            className="hidden md:inline-block px-3 py-1.5 rounded-lg text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+            disabled={running}
+            title="Save (Ctrl/Cmd+S)"
+          >
+            Save
+          </button>
+          <button
+            aria-label="Run"
+            onClick={onRun}
+            className="hidden md:inline-block px-4 py-1.5 rounded-lg text-sm bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
+            disabled={running}
+            title="Run (Ctrl/Cmd + Enter)"
+          >
+            {running ? "Running..." : "Run ▶"}
+          </button>
+
+          <div className="hidden lg:flex items-center gap-2">
+            {!!onToggleMaximize && (
               <button
-                aria-label="Run"
-                onClick={onRun}
-                className="min-w-fit px-3 py-1 rounded-lg text-xs sm:text-sm bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
-                disabled={running}
+                onClick={onToggleMaximize}
+                className="px-3 py-1.5 rounded-lg text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+                title={isMaximized ? "Exit Full Width" : "Expand Editor"}
               >
-                {running ? "Running..." : "Run ▶"}
+                {isMaximized ? "Exit Full Width" : "Expand Editor"}
+              </button>
+            )}
+            {!!onResetSize && (
+              <button
+                onClick={onResetSize}
+                className="px-3 py-1.5 rounded-lg text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
+                title="Reset panel size"
+              >
+                Reset Size
               </button>
             )}
           </div>
-
-          {!isMobile && (
-            <div className="hidden lg:flex items-center gap-2">
-              {!!onToggleMaximize && (
-                <button
-                  onClick={onToggleMaximize}
-                  className="px-3 py-1 rounded-lg text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
-                  title={isMaximized ? "Exit Full Width" : "Expand Editor"}
-                >
-                  {isMaximized ? "Exit Full Width" : "Expand Editor"}
-                </button>
-              )}
-              {!!onResetSize && (
-                <button
-                  onClick={onResetSize}
-                  className="px-3 py-1 rounded-lg text-sm border border-black/10 dark:border-white/20 bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-800"
-                  title="Reset panel size"
-                >
-                  Reset Size
-                </button>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
@@ -270,34 +238,33 @@ export default function EditorPanel({
           theme={mounted ? monacoTheme : "light"}
           value={code}
           onChange={(v) => onCodeChange(v ?? "")}
-          options={isMobile ? mobileEditorOptions : desktopEditorOptions}
+          options={{
+            fontFamily: editorSettings?.fontFamily,
+            fontSize: editorSettings?.fontSize ?? 14,
+            minimap: { enabled: !!editorSettings?.minimap },
+            scrollBeyondLastLine: false,
+            wordWrap: editorSettings?.wordWrap ?? "on",
+            smoothScrolling: true,
+            tabSize: editorSettings?.tabSize ?? 2,
+            lineNumbers: editorSettings?.lineNumbers ?? "on",
+            cursorBlinking: "smooth",
+            cursorSmoothCaretAnimation: "on",
+            renderWhitespace: "selection",
+            contextmenu: true,
+            dragAndDrop: true,
+          }}
           onMount={(editor) => {
             editorRef.current = editor;
             setMounted(true);
-
-            // Mobile-specific optimizations
-            if (isMobile) {
-              // Disable touch gestures that interfere with typing
-              editor.updateOptions({
-                disableTouchGestures: true,
-              });
-
-              // Focus the editor automatically on mobile
-              setTimeout(() => {
-                editor.focus();
-              }, 300);
-            }
           }}
         />
       </div>
 
-      <div className="p-2 sm:p-4 border-t border-black/10 dark:border-white/10">
-        <label className="block text-xs sm:text-sm mb-1">
-          Standard Input (stdin)
-        </label>
+      <div className="p-3 sm:p-4 border-t border-black/10 dark:border-white/10">
+        <label className="block text-sm mb-1">Standard Input (stdin)</label>
         <textarea
           aria-label="stdin"
-          className="w-full rounded-lg border border-black/10 dark:border-white/20 bg-white dark:bg-black p-2 h-20 sm:h-24 font-mono text-xs sm:text-sm"
+          className="w-full rounded-lg border border-black/10 dark:border-white/20 bg-white dark:bg-black p-2 h-24 font-mono text-sm"
           value={stdin}
           onChange={(e) => onStdinChange(e.target.value)}
           placeholder="Optional input supplied to the program..."
