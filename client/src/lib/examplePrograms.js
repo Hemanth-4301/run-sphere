@@ -1,4 +1,28 @@
 export const EXAMPLES = {
+  csharp: `// Hello World - C#
+using System;
+class Program {
+  static void Main() {
+    Console.WriteLine("Hello, World!");
+  }
+}
+`,
+  java: `// Hello World - Java
+public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello, World!");
+  }
+}
+`,
+  cpp: `// Hello World - C++
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}
+`,
+
   javascript: `// Hello World - JavaScript
 console.log("Hello, World!");
 `,
@@ -12,30 +36,7 @@ int main() {
     return 0;
 }
 `,
-  cpp: `// Hello World - C++
-#include <iostream>
-using namespace std;
-int main() {
-    cout << "Hello, World!" << endl;
-    return 0;
-}
-`,
-  java: `// Hello World - Java
-public class Main {
-  public static void main(String[] args) {
-    System.out.println("Hello, World!");
-  }
-}
-`,
-  csharp: `// Hello World - C#
-using System;
-class Program {
-  static void Main() {
-    Console.WriteLine("Hello, World!");
-  }
-}
-`,
-}
+};
 
 export const STDIN_EXAMPLE = {
   javascript: `John`,
@@ -45,7 +46,7 @@ export const STDIN_EXAMPLE = {
   cpp: `foo bar`,
   java: `baz`,
   csharp: `qux`,
-}
+};
 
 export const ERROR_EXAMPLES = {
   javascript: `// Runtime error example
@@ -80,7 +81,7 @@ class Program {
   }
 }
 `,
-}
+};
 
 export const TIMEOUT_EXAMPLES = {
   javascript: `while(true) {}`,
@@ -89,4 +90,4 @@ export const TIMEOUT_EXAMPLES = {
   cpp: `int main(){ for(;;){} }`,
   java: `public class Main { public static void main(String[] args){ while(true){} } }`,
   csharp: `using System; class Program { static void Main(){ for(;;){} } }`,
-}
+};

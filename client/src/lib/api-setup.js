@@ -3,8 +3,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-// const BASE_URL = "https://run-sphere-api.onrender.com";
-const BASE_URL = "http://localhost:5000"; 
+const BASE_URL = "https://run-sphere-api.onrender.com";
 
 export async function runCode({ language, code, stdin, timeoutMs }) {
   const resp = await fetch(`${BASE_URL}/api/run`, {

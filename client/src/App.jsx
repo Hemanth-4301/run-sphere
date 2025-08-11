@@ -5,7 +5,7 @@ import EditorPanel from "./components/EditorPanel.jsx";
 import OutputPanel from "./components/OutputPanel.jsx";
 import SavedPrograms from "./components/SavedPrograms.jsx";
 import SettingsPanel from "./components/SettingsPanel.jsx";
-import { runCode } from "./lib/api.js";
+import { runCode } from "./lib/api-setup.js";
 import { saveProgram } from "./lib/localStoragePrograms.js";
 import { EXAMPLES } from "./lib/examplePrograms.js";
 import { useViewportHeight } from "./lib/useViewportHeight.js";

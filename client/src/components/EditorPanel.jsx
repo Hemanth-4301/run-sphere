@@ -5,12 +5,12 @@ import Editor from "@monaco-editor/react";
 import { EXAMPLES, STDIN_EXAMPLE } from "../lib/examplePrograms";
 
 const LANG_OPTIONS = [
-  { value: "javascript", label: "JavaScript", monaco: "javascript" },
-  { value: "python", label: "Python", monaco: "python" },
-  { value: "c", label: "C", monaco: "c" },
-  { value: "cpp", label: "C++", monaco: "cpp" },
   { value: "csharp", label: "C#", monaco: "csharp" },
   { value: "java", label: "Java", monaco: "java" },
+  { value: "python", label: "Python", monaco: "python" },
+  { value: "javascript", label: "JavaScript", monaco: "javascript" },
+  { value: "c", label: "C", monaco: "c" },
+  { value: "cpp", label: "C++", monaco: "cpp" },
 ];
 
 export default function EditorPanel({

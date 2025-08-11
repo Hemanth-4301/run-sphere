@@ -1,5 +1,5 @@
 {
-  "name": "multi-language-compiler-server",
+  "name": "run-sphere-server",
   "version": "1.0.0",
   "description": "Express backend for Multi-language Online Compiler using Gemini API",
   "main": "index.js",
